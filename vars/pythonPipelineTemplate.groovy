@@ -38,16 +38,17 @@ def call(serviceName) {
     sonar.sonarQubeAnalysis(serviceName, sonarHostURL)
 
     // Step 5: Install python dependencies
-    global.pythonRunInstallDependencies()
+    // global.pythonRunInstallDependencies()
 
-    // Step 6: Build docker images with the new tag
-    global.buildDockerImages(imageRegistry: imageRegistry, credentialDockerId: credentialDockerId, namespaceRegistry: namespaceRegistry, serviceName: serviceName)
+    // // Step 6: Build docker images with the new tag
+    // global.buildDockerImages(imageRegistry: imageRegistry, credentialDockerId: credentialDockerId, namespaceRegistry: namespaceRegistry, serviceName: serviceName)
     
-    // Step 7: Scan the vulnerabilities of the new image
-    trivy.trivyScanDockerImages(imageBuildTag)
+    // // Step 7: Scan the vulnerabilities of the new image
+    // trivy.trivyScanDockerImages(imageBuildTag)
     
-    // Step 8: Push image to image registry and update the new image tag in the gitops repository
-    // and then Argocd can sync the new deployment
-    global.pushDockerImages(imageRegistry: imageRegistry, credentialDockerId: credentialDockerId, namespaceRegistry: namespaceRegistry, serviceName: serviceName)
-    global.deployToK8S(gitopsRepo: gitopsRepo, gitopsBranch: gitopsBranch, gitCredential: gitCredential, serviceName: serviceName)
+    // // Step 8: Push image to image registry and update the new image tag in the gitops repository
+    // // and then Argocd can sync the new deployment
+    // global.pushDockerImages(imageRegistry: imageRegistry, credentialDockerId: credentialDockerId, namespaceRegistry: namespaceRegistry, serviceName: serviceName)
+    // global.deployToK8S(gitopsRepo: gitopsRepo, gitopsBranch: gitopsBranch, gitCredential: gitCredential, serviceName: serviceName)
+
 }
