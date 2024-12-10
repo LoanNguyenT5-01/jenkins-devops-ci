@@ -17,7 +17,6 @@ def sonarQubeAnalysis(projectKey, sonarHostURL, sonarAuthToken) {
                     ${scannerHome}/bin/sonar-scanner \
                     -Dsonar.projectKey=${projectKey}-${env.BRANCH_NAME} \
                     -Dsonar.sources=. \
-                    -Dsonar.exclusions=**/tests/**,**/.venv/** \
                     -Dsonar.host.url=${SONAR_HOST_URL} \
                     -Dsonar.token=${SONAR_TOKEN} \
                     -Dsonar.python.coverage.reportPaths=results/coverage.xml
@@ -31,7 +30,6 @@ def sonarQubeAnalysis(projectKey, sonarHostURL, sonarAuthToken) {
                     call ${scannerHome}\\bin\\sonar-scanner ^
                     -Dsonar.projectKey=${projectKey}-${env.BRANCH_NAME} ^
                     -Dsonar.sources=. ^
-                    -Dsonar.exclusions=**/tests/**,**/.venv/** ^
                     -Dsonar.host.url=${SONAR_HOST_URL} ^
                     -Dsonar.token=${SONAR_TOKEN} ^
                     -Dsonar.python.coverage.reportPaths=results/coverage.xml
