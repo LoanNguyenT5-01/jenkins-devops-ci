@@ -7,7 +7,7 @@ def sonarQubeAnalysis(projectKey, sonarHostURL, sonarAuthToken) {
     stage('Analysis Static Code By SonarQube') {
         script {
             withSonarQubeEnv('SonarQube') {
-                def sonarAuthToken = credentials('sonar-token')
+                
                 if (isUnix()) {
                     // Run SonarQube Scanner inside a Docker container on Linux
                     sh """
