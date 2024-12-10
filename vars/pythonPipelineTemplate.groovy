@@ -13,9 +13,14 @@ def call(serviceName) {
     def global = new Global()
     def sonar = new Sonar()
 
-    stage ('Prepare Package') {
+    stage('Prepare Package') {
         script {
-            sh "mkdir -p .ci"
+            if (isUnix()) {
+                sh 'mkdir -p .ci'
+            } else {
+                bat 'mkdir .ci'
+            }
+            
             writeFile file: '.ci/html.tpl', text: libraryResource('trivy/html.tpl')
         }
     }

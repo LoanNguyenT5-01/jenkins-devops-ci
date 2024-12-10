@@ -1,18 +1,31 @@
 package main.pisharp
 
-def pythonRunInstallDependencies(){
-    stage ("Run Install Dependencies ") {
-        sh "mkdir -p results"
-        sh 'docker run --rm -v $(pwd):/app python:3.9-slim bash -c "pip install poetry && cd /app && poetry config virtualenvs.in-project true && poetry install"'
-    }    
+def pythonRunInstallDependencies() {
+    stage("Run Install Dependencies") {
+        if (isUnix()) {
+            sh 'mkdir -p results'
+        } else {
+            bat 'mkdir results'
+        }
+        sh '''
+            docker run --rm -v $(pwd):/app python:3.9-slim bash -c "pip install poetry && cd /app && poetry config virtualenvs.in-project true && poetry install"
+        '''
+    }
 }
 
 def runPythonUnitTest() {
-    stage ("Run Unit Tests") {
-        sh "mkdir -p results"
-        sh 'docker run --rm -v $(pwd):/app python:3.9-slim bash -c "pip install poetry && cd /app && poetry config virtualenvs.in-project true && poetry install && poetry run pytest --cov=app --cov-report=xml:results/coverage.xml --junitxml=results/test-results.xml"'
+    stage("Run Unit Tests") {
+        if (isUnix()) {
+            sh 'mkdir -p results'
+        } else {
+            bat 'mkdir results'
+        }
+        sh '''
+            docker run --rm -v $(pwd):/app python:3.9-slim bash -c "pip install poetry && cd /app && poetry config virtualenvs.in-project true && poetry install && poetry run pytest --cov=app --cov-report=xml:results/coverage.xml --junitxml=results/test-results.xml"
+        '''
     }
 }
+
 
 def processTestResults(){
     stage ('Process Test Results') {
