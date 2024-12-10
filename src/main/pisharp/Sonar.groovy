@@ -16,7 +16,7 @@ def sonarQubeAnalysis(projectKey, sonarHostURL, sonarAuthToken) {
                     -Dsonar.sources=. \
                     -Dsonar.exclusions=**/tests/** \
                     -Dsonar.host.url=${env.SONAR_HOST_URL} \
-                    -Dsonar.login=${env.SONAR_TOKEN} \
+                    -Dsonar.token=${env.SONAR_TOKEN} \
                     -Dsonar.python.coverage.reportPaths=results/coverage.xml
                     """
                 } else {
@@ -27,7 +27,7 @@ def sonarQubeAnalysis(projectKey, sonarHostURL, sonarAuthToken) {
                     -Dsonar.sources=. ^
                     -Dsonar.exclusions=**/tests/** ^
                     -Dsonar.host.url=${env.SONAR_HOST_URL} ^
-                    -Dsonar.login=${env.SONAR_TOKEN} ^
+                    -Dsonar.token=${env.SONAR_TOKEN} ^
                     -Dsonar.python.coverage.reportPaths=results/coverage.xml
                     """
                 }
