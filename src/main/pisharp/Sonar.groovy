@@ -1,23 +1,35 @@
 package main.pisharp
 
-def sonarQubeAnalysis(projectKey,sonarHostURL) {
+def sonarQubeAnalysis(projectKey, sonarHostURL) {
     def SONAR_HOST_URL = sonarHostURL
-    def scannerHome = tool 'SonarQubeScanner';
+    def scannerHome = tool 'SonarQubeScanner'
     stage('Analysis Static Code By SonarQube') {
         script {
-            withSonarQubeEnv('SonarQube'){
-                // Run SonarQube Scanner inside a Docker container
-                sh """
-                ${scannerHome}/bin/sonar-scanner \
-                -Dsonar.projectKey=${projectKey}-${env.BRANCH_NAME} \
-                -Dsonar.sources=. \
-                -Dsonar.exclusions=**/tests/** \
-                -Dsonar.host.url=${env.SONAR_HOST_URL} \
-                -Dsonar.login=${env.SONAR_AUTH_TOKEN} \
-                -Dsonar.python.coverage.reportPaths=results/coverage.xml
-                """         
+            withSonarQubeEnv('SonarQube') {
+                if (isUnix()) {
+                    // Run SonarQube Scanner inside a Docker container on Linux
+                    sh """
+                    ${scannerHome}/bin/sonar-scanner \
+                    -Dsonar.projectKey=${projectKey}-${env.BRANCH_NAME} \
+                    -Dsonar.sources=. \
+                    -Dsonar.exclusions=**/tests/** \
+                    -Dsonar.host.url=${env.SONAR_HOST_URL} \
+                    -Dsonar.login=${env.SONAR_AUTH_TOKEN} \
+                    -Dsonar.python.coverage.reportPaths=results/coverage.xml
+                    """
+                } else {
+                    // Run SonarQube Scanner inside a Docker container on Windows
+                    bat """
+                    call ${scannerHome}\\bin\\sonar-scanner ^
+                    -Dsonar.projectKey=${projectKey}-${env.BRANCH_NAME} ^
+                    -Dsonar.sources=. ^
+                    -Dsonar.exclusions=**/tests/** ^
+                    -Dsonar.host.url=${env.SONAR_HOST_URL} ^
+                    -Dsonar.login=${env.SONAR_AUTH_TOKEN} ^
+                    -Dsonar.python.coverage.reportPaths=results/coverage.xml
+                    """
+                }
             }
-
         }
     }
     stage('Quality Gate Check') {
