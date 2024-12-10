@@ -23,20 +23,6 @@ def call(serviceName) {
             writeFile file: isUnix() ? '.ci/html.tpl' : '.ci\\html.tpl', text: libraryResource('trivy/html.tpl')
         }
     }
-    stage("Scan Secrets By Trivy (Docker)") {
-        script {
-            def trivyCommand = """
-                docker run --rm -v ${WORKSPACE}:/app aquasec/trivy:latest fs /app \
-                    --scanners secret --format template --template @/app/.ci/html.tpl \
-                    -o /app/.ci/secretreport.html
-            """
-            if (isUnix()) {
-                sh trivyCommand
-            } else {
-                bat trivyCommand
-            }
-        }
-    }
 
 
     // Step 1: Scan all the application to check if we can put any sensitive information in the source code or not
