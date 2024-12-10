@@ -3,9 +3,7 @@ package main.pisharp
 def trivyScanSecrets() {
     stage ("Scan Secrets By Trivy ") {
         script {
-            bat """
-            trivy fs . --scanners secret --format template --template @.ci/html.tpl -o .ci/secretreport.html
-            """
+            sh "trivy fs . --scanners secret --format template --template @.ci/html.tpl -o .ci/secretreport.html"
             publishHTML (target : [allowMissing: true,
                 alwaysLinkToLastBuild: true,
                 keepAll: true,
@@ -21,9 +19,7 @@ def trivyScanSecrets() {
 def trivyScanVulnerabilities() {
     stage ("Scan Vulnerabilities By Trivy ") {
         script {
-            bat """
-            trivy fs . --severity HIGH,CRITICAL --scanners vuln --exit-code 0 --format template --template @.ci/html.tpl -o .ci/vulnreport.html
-            """
+            sh "trivy fs . --severity HIGH,CRITICAL --scanners vuln --exit-code 0 --format template --template @.ci/html.tpl -o .ci/vulnreport.html"
             publishHTML (target : [allowMissing: true,
                 alwaysLinkToLastBuild: true,
                 keepAll: true,
@@ -36,11 +32,9 @@ def trivyScanVulnerabilities() {
     }
 }
 
-def trivyScanDockerImages(image) {
+def trivyScanDockerImages(image){
     stage ("Scan Docker Images By Trivy") {
-        bat """
-        trivy image --scanners vuln --exit-code 0 --severity HIGH,CRITICAL --format template --template @.ci/html.tpl -o .ci/imagesreport.html ${image}
-        """
+        sh "trivy image --scanners vuln --exit-code 0 --severity HIGH,CRITICAL --format template --template @.ci/html.tpl -o .ci/imagesreport.html ${image}"
         publishHTML (target : [allowMissing: true,
             alwaysLinkToLastBuild: true,
             keepAll: true,
