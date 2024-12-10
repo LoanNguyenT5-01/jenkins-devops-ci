@@ -1,7 +1,8 @@
 package main.pisharp
 
-def sonarQubeAnalysis(projectKey, sonarHostURL) {
+def sonarQubeAnalysis(projectKey, sonarHostURL, sonarAuthToken) {
     def SONAR_HOST_URL = sonarHostURL
+    def SONAR_TOKEN = sonarAuthToken
     def scannerHome = tool 'SonarQubeScanner'
     stage('Analysis Static Code By SonarQube') {
         script {
@@ -15,7 +16,7 @@ def sonarQubeAnalysis(projectKey, sonarHostURL) {
                     -Dsonar.sources=. \
                     -Dsonar.exclusions=**/tests/** \
                     -Dsonar.host.url=${env.SONAR_HOST_URL} \
-                    -Dsonar.login=${sonarAuthToken} \
+                    -Dsonar.login=${env.SONAR_TOKEN} \
                     -Dsonar.python.coverage.reportPaths=results/coverage.xml
                     """
                 } else {
@@ -26,7 +27,7 @@ def sonarQubeAnalysis(projectKey, sonarHostURL) {
                     -Dsonar.sources=. ^
                     -Dsonar.exclusions=**/tests/** ^
                     -Dsonar.host.url=${env.SONAR_HOST_URL} ^
-                    -Dsonar.login=${sonarAuthToken} ^
+                    -Dsonar.login=${env.SONAR_TOKEN} ^
                     -Dsonar.python.coverage.reportPaths=results/coverage.xml
                     """
                 }

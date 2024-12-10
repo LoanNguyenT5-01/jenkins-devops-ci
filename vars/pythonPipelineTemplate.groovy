@@ -9,6 +9,7 @@ def call(serviceName) {
     def gitCredential = 'github'
     def imageBuildTag = "${imageRegistry}/${namespaceRegistry}/${serviceName}:${BRANCH_NAME}-${BUILD_NUMBER}"
     def sonarHostURL = 'http://localhost:9000/'
+    def sonarAuthToken = 'sqa_1723b9c52ae3a914378ff348b49245e1152ea4d9'
     def trivy = new Trivy()
     def global = new Global()
     def sonar = new Sonar()
@@ -36,7 +37,7 @@ def call(serviceName) {
     trivy.trivyScanVulnerabilities()
 
     // Step 4: Scan static code to check the Code smell, Bug, Vulnerability
-    sonar.sonarQubeAnalysis(serviceName, sonarHostURL)
+    sonar.sonarQubeAnalysis(serviceName, sonarHostURL, sonarAuthToken)
 
     // Step 5: Install python dependencies
     global.pythonRunInstallDependencies()
