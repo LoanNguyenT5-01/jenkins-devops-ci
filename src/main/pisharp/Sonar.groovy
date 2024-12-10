@@ -6,6 +6,7 @@ def sonarQubeAnalysis(projectKey, sonarHostURL) {
     stage('Analysis Static Code By SonarQube') {
         script {
             withSonarQubeEnv('SonarQube') {
+                def sonarAuthToken = credentials('sonar-token')
                 if (isUnix()) {
                     // Run SonarQube Scanner inside a Docker container on Linux
                     sh """
@@ -14,7 +15,7 @@ def sonarQubeAnalysis(projectKey, sonarHostURL) {
                     -Dsonar.sources=. \
                     -Dsonar.exclusions=**/tests/** \
                     -Dsonar.host.url=${env.SONAR_HOST_URL} \
-                    -Dsonar.login=${env.SONAR_AUTH_TOKEN} \
+                    -Dsonar.login=${sonarAuthToken} \
                     -Dsonar.python.coverage.reportPaths=results/coverage.xml
                     """
                 } else {
@@ -25,7 +26,7 @@ def sonarQubeAnalysis(projectKey, sonarHostURL) {
                     -Dsonar.sources=. ^
                     -Dsonar.exclusions=**/tests/** ^
                     -Dsonar.host.url=${env.SONAR_HOST_URL} ^
-                    -Dsonar.login=${env.SONAR_AUTH_TOKEN} ^
+                    -Dsonar.login=${sonarAuthToken} ^
                     -Dsonar.python.coverage.reportPaths=results/coverage.xml
                     """
                 }
