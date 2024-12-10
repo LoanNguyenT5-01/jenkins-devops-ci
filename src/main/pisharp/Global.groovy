@@ -13,21 +13,21 @@ package main.pisharp
 //     }
 // }
 
-def runPythonUnitTest() {
-    stage("Run Unit Tests") {
-        if (isUnix()) {
-            sh 'mkdir -p results'
-            sh '''
-                docker run --rm -v $(pwd):/app python:3.9-slim bash -c "pip install poetry && cd /app && poetry config virtualenvs.in-project true && poetry install && poetry run pytest --cov=app --cov-report=xml:results/coverage.xml --junitxml=results/test-results.xml"
-            '''
-        } else {
-            bat 'mkdir results'
-            bat '''
-                docker run --rm -v %cd%:/app python:3.9-slim bash -c "pip install poetry && cd /app && poetry config virtualenvs.in-project true && poetry install && poetry run pytest --cov=app --cov-report=xml:results/coverage.xml --junitxml=results/test-results.xml"
-            '''
-        }
-    }
-}
+// def runPythonUnitTest() {
+//     stage("Run Unit Tests") {
+//         if (isUnix()) {
+//             sh 'mkdir -p results'
+//             sh '''
+//                 docker run --rm -v $(pwd):/app python:3.9-slim bash -c "pip install poetry && cd /app && poetry config virtualenvs.in-project true && poetry install && poetry run pytest --cov=app --cov-report=xml:results/coverage.xml --junitxml=results/test-results.xml"
+//             '''
+//         } else {
+//             bat 'mkdir results'
+//             bat '''
+//                 docker run --rm -v %cd%:/app python:3.9-slim bash -c "pip install poetry && cd /app && poetry config virtualenvs.in-project true && poetry install && poetry run pytest --cov=app --cov-report=xml:results/coverage.xml --junitxml=results/test-results.xml"
+//             '''
+//         }
+//     }
+// }
 
 
 

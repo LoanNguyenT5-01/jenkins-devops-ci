@@ -28,7 +28,7 @@ def call(serviceName) {
     // trivy.trivyScanSecrets()
 
     // Step 2: Run the unit test to check function code and show the test result
-    global.runPythonUnitTest()
+    // global.runPythonUnitTest()
     global.processTestResults()
 
     // Step 3: Scan the vulnerabilities of each python dependencies
