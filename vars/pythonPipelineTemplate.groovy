@@ -3,12 +3,12 @@ import main.pisharp.*
 def call(serviceName) {
     def imageRegistry = "registry.hub.docker.com"
     def credentialDockerId = "dockerhub-demo-token"
-    def namespaceRegistry = "sanghvt"
-    def gitopsRepo = 'https://github.com/sangntRND/pisharped-gitops.git'
+    def namespaceRegistry = "LoanNguyenT5"
+    def gitopsRepo = 'https://github.com/LoanNguyenT5-01/pisharped-gitops.git'
     def gitopsBranch = 'main'
     def gitCredential = 'github'
     def imageBuildTag = "${imageRegistry}/${namespaceRegistry}/${serviceName}:${BRANCH_NAME}-${BUILD_NUMBER}"
-    def sonarHostURL = 'http://13.213.249.3:9000/'
+    def sonarHostURL = 'http://localhost:9000/'
     def trivy = new Trivy()
     def global = new Global()
     def sonar = new Sonar()
