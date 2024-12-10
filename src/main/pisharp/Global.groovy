@@ -4,15 +4,18 @@ def pythonRunInstallDependencies() {
     stage ("Run Install Dependencies") {
         script {
             if (isUnix()) {
+                // Ensure the directory exists without failing if it already exists
                 sh "mkdir -p results"
                 sh 'docker run --rm -v $(pwd):/app python:3.9-slim bash -c "pip install poetry && cd /app && poetry config virtualenvs.in-project true && poetry install"'
             } else {
-                bat 'mkdir results'
+                // Check if the directory exists before creating it
+                bat 'if not exist results mkdir results'
                 bat 'docker run --rm -v %CD%:/app python:3.9-slim bash -c "pip install poetry && cd /app && poetry config virtualenvs.in-project true && poetry install"'
             }
         }
     }
 }
+
 
 def runPythonUnitTest() {
     stage ("Run Unit Tests") {
