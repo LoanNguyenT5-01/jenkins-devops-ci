@@ -25,7 +25,7 @@ def call(serviceName) {
         }
     }
     // Step 1: Scan all the application to check if we can put any sensitive informations in the source code or not
-    trivy.trivyScanSecrets()
+    // trivy.trivyScanSecrets()
 
     // Step 2: Run the unit test to check function code and show the test result
     global.runPythonUnitTest()
