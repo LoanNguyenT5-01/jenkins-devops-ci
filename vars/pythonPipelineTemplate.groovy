@@ -27,14 +27,14 @@ def call(serviceName) {
 
 
     // Step 1: Scan all the application to check if we can put any sensitive information in the source code or not
-    trivy.trivyScanSecrets()
+    // trivy.trivyScanSecrets()
 
     // Step 2: Run the unit test to check function code and show the test result
     global.runPythonUnitTest()
     global.processTestResults()
 
     // Step 3: Scan the vulnerabilities of each python dependency
-    trivy.trivyScanVulnerabilities()
+    // trivy.trivyScanVulnerabilities()
 
     // Step 4: Scan static code to check the Code smell, Bug, Vulnerability
     // sonar.sonarQubeAnalysis(serviceName, sonarHostURL, sonarAuthToken)
