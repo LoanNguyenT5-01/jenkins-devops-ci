@@ -2,7 +2,7 @@ import main.pisharp.*
 
 def call(serviceName) {
     def imageRegistry = "registry.hub.docker.com"
-    def credentialDockerId = "dockerhub-demo-token"
+    def credentialDockerId = "docker-hub"
     def namespaceRegistry = "LoanNguyenT5-01"
     def gitopsRepo = 'https://github.com/LoanNguyenT5-01/pisharped-gitops.git'
     def gitopsBranch = 'main'
