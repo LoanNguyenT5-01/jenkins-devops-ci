@@ -109,7 +109,7 @@ def deployToK8S(args) {
             } else {
                 dir('gitops') {
                     bat """
-                    git clone https://${gitCredential}@${gitopsRepo} -b ${gitopsBranch} .
+                    git clone ${gitopsRepo} -b ${gitopsBranch} .
                     set targetDir=nonprod
                     if "%BRANCH_NAME%"=="main" set targetDir=prod
                     set deploymentYamlFile=%targetDir%\\%serviceName%\\deployment.yaml
