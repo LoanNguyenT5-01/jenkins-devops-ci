@@ -85,6 +85,7 @@ def deployToK8S(args) {
     def serviceName = args.serviceName
     def gitopsBranch = args.gitopsBranch
     def newTag = "${BRANCH_NAME}-${BUILD_NUMBER}"
+    
     stage ("Deploy To K8S Using GitOps Concept") {
         script {
             if (isUnix()) {
@@ -98,30 +99,33 @@ def deployToK8S(args) {
                     """
                     withCredentials([gitUsernamePassword(credentialsId: "${gitCredential}")]) {
                         sh """
-                        git config user.email "jenkins-ci@example.com"
-                        git config user.name "Jenkins"
-                        git add ${deploymentYamlFile}
-                        git commit -m "Update image to ${serviceName}"
-                        git push origin ${gitopsBranch}
+                            git config user.email "jenkins-ci@example.com"
+                            git config user.name "Jenkins"
+                            git add ${deploymentYamlFile}
+                            git commit -m "Update image to ${serviceName}"
+                            git push origin ${gitopsBranch}
                         """
                     }
                 }
             } else {
                 dir('gitops') {
                     bat """
-                    git clone ${gitopsRepo} -b ${gitopsBranch} .
-                    set targetDir=nonprod
-                    if "%BRANCH_NAME%"=="main" set targetDir=prod
-                    set deploymentYamlFile=%targetDir%\\%serviceName%\\deployment.yaml
-                    powershell -Command "((Get-Content %deploymentYamlFile% -Raw) -replace '(^\\s*image: [^:]*:)[^ ]*', '\\1${newTag}') | Set-Content %deploymentYamlFile%"
-                    git config user.email "jenkins-ci@example.com"
-                    git config user.name "Jenkins"
-                    git add %deploymentYamlFile%
-                    git commit -m "Update image to ${serviceName}"
-                    git push origin %gitopsBranch%
+                        git clone ${gitopsRepo} -b ${gitopsBranch} .
+                        set targetDir=nonprod
+                        if "%BRANCH_NAME%"=="main" set targetDir=prod
+                        set deploymentYamlFile=%targetDir%\\%serviceName%\\deployment.yaml
+                        
+                        powershell -Command "((Get-Content '%deploymentYamlFile%' -Raw) -replace '(^\\\\s*image: [^:]*:)[^ ]*', '\\\\1${newTag}') | Set-Content '%deploymentYamlFile%'"
+                        
+                        git config user.email "jenkins-ci@example.com"
+                        git config user.name "Jenkins"
+                        git add %deploymentYamlFile%
+                        git commit -m "Update image to ${serviceName}"
+                        git push origin %gitopsBranch%
                     """
                 }
             }
         }
     }
 }
+
