@@ -48,8 +48,8 @@ def call(serviceName) {
     // // Step 7: Scan the vulnerabilities of the new image
     trivy.trivyScanDockerImages(imageBuildTag)
 
-    // // Step 8: Push image to image registry and update the new image tag in the gitops repository
-    // global.pushDockerImages(imageRegistry: imageRegistry, credentialDockerId: credentialDockerId, namespaceRegistry: namespaceRegistry, serviceName: serviceName)
+    // Step 8: Push image to image registry and update the new image tag in the gitops repository
+    global.pushDockerImages(imageRegistry: imageRegistry, credentialDockerId: credentialDockerId, namespaceRegistry: namespaceRegistry, serviceName: serviceName)
     
     // and then ArgoCD can sync the new deployment
     global.deployToK8S(gitopsRepo: gitopsRepo, gitopsBranch: gitopsBranch, gitCredential: gitCredential, serviceName: serviceName)

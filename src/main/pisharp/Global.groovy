@@ -82,29 +82,29 @@ def pushDockerImages(args) {
             }
         }
     }
-    // stage("Push Image to ECR") {
+    stage("Push Image to ECR") {
         
-    //     withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: awsCredentialsId]]) {
-    //         script {
-    //             if (isUnix()) {
-    //                 // Commands for Unix/Linux
-    //                 sh """
-    //                     aws ecr get-login-password --region ap-southeast-1 | docker login --username AWS --password-stdin ${ecrUri}
-    //                     docker tag ${imageRegistry}/${namespaceRegistry}/${serviceName}:${BRANCH_NAME}-${BUILD_NUMBER} ${ecrUri}:${BRANCH_NAME}-${BUILD_NUMBER}
-    //                     docker push ${ecrUri}:${BRANCH_NAME}-${BUILD_NUMBER}
-    //                 """
-    //             } else {
-    //                 // Commands for Windows
-    //                 bat """
-    //                     aws ecr get-login-password --region ap-southeast-1 | docker login --username AWS --password-stdin ${ecrUri}
-    //                     docker tag ${imageRegistry}/${namespaceRegistry}/${serviceName}:${BRANCH_NAME}-${BUILD_NUMBER} ${ecrUri}:${BRANCH_NAME}-${BUILD_NUMBER}
-    //                     docker push ${ecrUri}:${BRANCH_NAME}-${BUILD_NUMBER}
-    //                 """
-    //             }
-    //         }
-    //     }
+        withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: awsCredentialsId]]) {
+            script {
+                if (isUnix()) {
+                    // Commands for Unix/Linux
+                    sh """
+                        aws ecr get-login-password --region ap-southeast-1 | docker login --username AWS --password-stdin ${ecrUri}
+                        docker tag ${imageRegistry}/${namespaceRegistry}/${serviceName}:${BRANCH_NAME}-${BUILD_NUMBER} ${ecrUri}:${BRANCH_NAME}-${BUILD_NUMBER}
+                        docker push ${ecrUri}:${BRANCH_NAME}-${BUILD_NUMBER}
+                    """
+                } else {
+                    // Commands for Windows
+                    bat """
+                        aws ecr get-login-password --region ap-southeast-1 | docker login --username AWS --password-stdin ${ecrUri}
+                        docker tag ${imageRegistry}/${namespaceRegistry}/${serviceName}:${BRANCH_NAME}-${BUILD_NUMBER} ${ecrUri}:${BRANCH_NAME}-${BUILD_NUMBER}
+                        docker push ${ecrUri}:${BRANCH_NAME}-${BUILD_NUMBER}
+                    """
+                }
+            }
+        }
     
-    // }
+    }
 }
 
 def deployToK8S(args) {
