@@ -138,25 +138,38 @@ def deployToK8S(args) {
             } else {
                 dir('gitops') {
                     git credentialsId: "${gitCredential}", url: "${gitopsRepo}", branch: "${gitopsBranch}"
+                    
                     withCredentials([gitUsernamePassword(credentialsId: "${gitCredential}")]) {
                         bat """
-                        del /f /q *.*
-                        for /d %%p in (*) do rmdir /s /q "%%p"
+                        REM Xóa toàn bộ file và thư mục nếu tồn tại
+                        if exist *.* del /f /q *.*
+                        if exist * for /d %%p in (*) do rmdir /s /q "%%p"
+                        
+                        REM Clone GitOps repository
                         git clone ${gitopsRepo} -b ${gitopsBranch} .
+                        
+                        REM Đặt target directory dựa trên nhánh
                         set targetDir=nonprod
                         if "%BRANCH_NAME%"=="main" set targetDir=prod
+                        
+                        REM Đường dẫn đến tệp YAML cần cập nhật
                         set deploymentYamlFile=%targetDir%\\${serviceName}\\deployment.yaml
                         
-                        powershell -Command "(Get-Content '%deploymentYamlFile%' -Raw) -replace '(^\\s*image: [^:]*:main-11)', 'image: main${newtag}' | Set-Content '%deploymentYamlFile%'"
+                        REM Thay thế tag image trong tệp YAML
+                        powershell -Command "(Get-Content '%deploymentYamlFile%' -Raw) -replace '(^\\s*image: [^:]*:main-11)', 'image: main-${newtag}' | Set-Content '%deploymentYamlFile%'"
                         
+                        REM Cấu hình Git
                         git config user.email "jenkins-ci@example.com"
                         git config user.name "Jenkins"
+                        
+                        REM Commit và push thay đổi
                         git add %deploymentYamlFile%
-                        git commit -m "Update image to ${serviceName}"
+                        git commit -m "Update image for ${serviceName} to main-${newtag}"
                         git push --set-upstream origin "${gitopsBranch}"
-                    """  
+                        """
                     }
                 }
+
             }
         }
     }
