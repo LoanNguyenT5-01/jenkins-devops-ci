@@ -137,7 +137,9 @@ def deployToK8S(args) {
                 }
             } else {
                 dir('gitops') {
-                    bat """
+                    git credentialsId: "${gitCredential}", url: "${gitopsRepo}", branch: "${gitopsBranch}"
+                    withCredentials([gitUsernamePassword(credentialsId: "${gitCredential}")]) {
+                        bat """
                         git clone ${gitopsRepo} -b ${gitopsBranch} .
                         set targetDir=nonprod
                         if "%BRANCH_NAME%"=="main" set targetDir=prod
@@ -150,7 +152,8 @@ def deployToK8S(args) {
                         git add %deploymentYamlFile%
                         git commit -m "Update image to ${serviceName}"
                         git push origin %gitopsBranch%
-                    """ 
+                    """  
+                    }
                 }
             }
         }
