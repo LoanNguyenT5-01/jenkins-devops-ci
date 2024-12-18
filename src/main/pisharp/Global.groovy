@@ -149,20 +149,19 @@ def deployToK8S(args) {
 
                             powershell -Command "
                             \$content = Get-Content '%deploymentYamlFile%' -Raw;
-                            \$newContent = \$content -replace '(^\\s*image:\\s*loannguyent5/orders-service:)[^\\s]*', '`$1${newTag}';
+                            \$newContent = \$content -replace '(^\\s*image:\\s*loannguyent5/orders-service:)[^\\s]*', '\`\$1\${newTag}';
+
                             Set-Content '%deploymentYamlFile%' -Value \$newContent
                             "
+
                             git config user.email "jenkins-ci@example.com"
                             git config user.name "Jenkins"
                             git add %deploymentYamlFile%
                             git commit -m "Update image for ${serviceName}"
                             git push --set-upstream origin "${gitopsBranch}"
                         """
-
                     }
                 }
-
-
             }
         }
     }
