@@ -140,12 +140,14 @@ def deployToK8S(args) {
                     git credentialsId: "${gitCredential}", url: "${gitopsRepo}", branch: "${gitopsBranch}"
                     withCredentials([gitUsernamePassword(credentialsId: "${gitCredential}")]) {
                         bat """
+                        del /f /q *.*
+                        for /d %%p in (*) do rmdir /s /q "%%p"
                         git clone ${gitopsRepo} -b ${gitopsBranch} .
                         set targetDir=nonprod
                         if "%BRANCH_NAME%"=="main" set targetDir=prod
                         set deploymentYamlFile=%targetDir%\\${serviceName}\\deployment.yaml
                         
-                        powershell -Command "(Get-Content '%deploymentYamlFile%' -Raw) -replace '(^\\s*image: [^:]*:)[^ ]*', '\\1${newTag}' | Set-Content '%deploymentYamlFile%'"
+                        powershell -Command "(Get-Content '%deploymentYamlFile%' -Raw) -replace '(^\s*image: [^:]*:main-11)', 'image: main {newtag}' | Set-Content '%deploymentYamlFile%'"
                         
                         git config user.email "jenkins-ci@example.com"
                         git config user.name "Jenkins"
