@@ -144,16 +144,21 @@ def deployToK8S(args) {
                             git clone ${gitopsRepo} -b ${gitopsBranch} .
                             set targetDir=nonprod
                             if "%BRANCH_NAME%"=="main" set targetDir=prod
-                            
+
                             set deploymentYamlFile=%targetDir%\\${serviceName}\\deployment.yaml
 
-                            powershell -Command "(Get-Content '%deploymentYamlFile%' -Raw) -replace '(^\\s*image:\\s*loannguyent5/orders-service:)[^\\s]*', '\${1}${newTag}' | Set-Content '%deploymentYamlFile%'"
+                            powershell -Command "
+                            \$content = Get-Content '%deploymentYamlFile%' -Raw;
+                            \$newContent = \$content -replace '(^\\s*image:\\s*loannguyent5/orders-service:)[^\\s]*', '`$1${newTag}';
+                            Set-Content '%deploymentYamlFile%' -Value \$newContent
+                            "
                             git config user.email "jenkins-ci@example.com"
                             git config user.name "Jenkins"
                             git add %deploymentYamlFile%
                             git commit -m "Update image for ${serviceName}"
                             git push --set-upstream origin "${gitopsBranch}"
                         """
+
                     }
                 }
 
