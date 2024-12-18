@@ -147,7 +147,7 @@ def deployToK8S(args) {
                         if "%BRANCH_NAME%"=="main" set targetDir=prod
                         set deploymentYamlFile=%targetDir%\\${serviceName}\\deployment.yaml
                         
-                        powershell -Command "(Get-Content '%deploymentYamlFile%' -Raw) -replace '(^\s*image: [^:]*:main-11)', 'image: main {newtag}' | Set-Content '%deploymentYamlFile%'"
+                        powershell -Command "(Get-Content '%deploymentYamlFile%' -Raw) -replace '(^\s*image: [^:]*:main-1)', 'image: main {newtag}' | Set-Content '%deploymentYamlFile%'"
                         
                         git config user.email "jenkins-ci@example.com"
                         git config user.name "Jenkins"
