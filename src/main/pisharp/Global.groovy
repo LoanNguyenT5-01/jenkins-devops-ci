@@ -148,7 +148,7 @@ def deployToK8S(args) {
                             set deploymentYamlFile=%targetDir%\\${serviceName}\\deployment.yaml
                             
                             REM Thay thế chuỗi image bằng newtag
-                            powershell -Command "(Get-Content '%deploymentYamlFile%' -Raw) -replace '(^\\s*image:\\s*loannguyent5/orders-service:)[^\\s]*', '\${1}${newtag}' | Set-Content '%deploymentYamlFile%'"
+                            powershell -Command "(Get-Content '%deploymentYamlFile%' -Raw) -replace '(^\\s*image:\\s*loannguyent5/orders-service:)[^\\s]*', '\${1}${newTag}' | Set-Content '%deploymentYamlFile%'"
                             
                             REM Commit và push thay đổi
                             git config user.email "jenkins-ci@example.com"
