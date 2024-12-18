@@ -151,7 +151,7 @@ def deployToK8S(args) {
                         git config user.name "Jenkins"
                         git add %deploymentYamlFile%
                         git commit -m "Update image to ${serviceName}"
-                        git push --set-upstream origin %gitopsBranch%
+                        git push --set-upstream origin "${gitopsBranch}"
                     """  
                     }
                 }
