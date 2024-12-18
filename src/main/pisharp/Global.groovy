@@ -113,7 +113,8 @@ def deployToK8S(args) {
     def serviceName = args.serviceName
     def gitopsBranch = args.gitopsBranch
     def newTag = "${BRANCH_NAME}-${BUILD_NUMBER}"
-    
+    println("New Tag: ${newTag}")
+
     stage ("Deploy To K8S Using GitOps Concept test") {
         script {
             if (isUnix()) {
@@ -140,21 +141,17 @@ def deployToK8S(args) {
                     git credentialsId: "${gitCredential}", url: "${gitopsRepo}", branch: "${gitopsBranch}"
                     withCredentials([gitUsernamePassword(credentialsId: "${gitCredential}")]) {
                         bat """
-                            REM Clone repository và setup
                             git clone ${gitopsRepo} -b ${gitopsBranch} .
                             set targetDir=nonprod
                             if "%BRANCH_NAME%"=="main" set targetDir=prod
                             
                             set deploymentYamlFile=%targetDir%\\${serviceName}\\deployment.yaml
-                            
-                            REM Thay thế chuỗi image bằng newtag
+
                             powershell -Command "(Get-Content '%deploymentYamlFile%' -Raw) -replace '(^\\s*image:\\s*loannguyent5/orders-service:)[^\\s]*', '\${1}${newTag}' | Set-Content '%deploymentYamlFile%'"
-                            
-                            REM Commit và push thay đổi
                             git config user.email "jenkins-ci@example.com"
                             git config user.name "Jenkins"
                             git add %deploymentYamlFile%
-                            git commit -m "Update image for ${serviceName} to ${newtag}"
+                            git commit -m "Update image for ${serviceName}"
                             git push --set-upstream origin "${gitopsBranch}"
                         """
                     }
