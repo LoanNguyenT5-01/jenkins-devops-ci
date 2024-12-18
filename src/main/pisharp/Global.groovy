@@ -71,40 +71,40 @@ def pushDockerImages(args) {
     def serviceName = args.serviceName
     def ecrUri = "275731741847.dkr.ecr.ap-southeast-1.amazonaws.com/practical-devops"
     def awsCredentialsId = 'aws-cli'
-    // stage ("Push Docker Images") {
-    //     withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: credentialDockerId, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-    //         docker.withRegistry("https://${imageRegistry}", credentialDockerId) {
-    //             if (isUnix()) {
-    //                 sh "docker push ${imageRegistry}/${namespaceRegistry}/${serviceName}:${BRANCH_NAME}-${BUILD_NUMBER}"
-    //             } else {
-    //                 bat "docker push ${imageRegistry}/${namespaceRegistry}/${serviceName}:${BRANCH_NAME}-${BUILD_NUMBER}"
-    //             }
-    //         }
-    //     }
-    // }
-    stage("Push Image to ECR") {
-        
-        withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: awsCredentialsId]]) {
-            script {
+    stage ("Push Docker Images") {
+        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: credentialDockerId, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+            docker.withRegistry("https://${imageRegistry}", credentialDockerId) {
                 if (isUnix()) {
-                    // Commands for Unix/Linux
-                    sh """
-                        aws ecr get-login-password --region ap-southeast-1 | docker login --username AWS --password-stdin ${ecrUri}
-                        docker tag ${imageRegistry}/${namespaceRegistry}/${serviceName}:${BRANCH_NAME}-${BUILD_NUMBER} ${ecrUri}:${BRANCH_NAME}-${BUILD_NUMBER}
-                        docker push ${ecrUri}:${BRANCH_NAME}-${BUILD_NUMBER}
-                    """
+                    sh "docker push ${imageRegistry}/${namespaceRegistry}/${serviceName}:${BRANCH_NAME}-${BUILD_NUMBER}"
                 } else {
-                    // Commands for Windows
-                    bat """
-                        aws ecr get-login-password --region ap-southeast-1 | docker login --username AWS --password-stdin ${ecrUri}
-                        docker tag ${imageRegistry}/${namespaceRegistry}/${serviceName}:${BRANCH_NAME}-${BUILD_NUMBER} ${ecrUri}:${BRANCH_NAME}-${BUILD_NUMBER}
-                        docker push ${ecrUri}:${BRANCH_NAME}-${BUILD_NUMBER}
-                    """
+                    bat "docker push ${imageRegistry}/${namespaceRegistry}/${serviceName}:${BRANCH_NAME}-${BUILD_NUMBER}"
                 }
             }
         }
-    
     }
+    // stage("Push Image to ECR") {
+        
+    //     withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: awsCredentialsId]]) {
+    //         script {
+    //             if (isUnix()) {
+    //                 // Commands for Unix/Linux
+    //                 sh """
+    //                     aws ecr get-login-password --region ap-southeast-1 | docker login --username AWS --password-stdin ${ecrUri}
+    //                     docker tag ${imageRegistry}/${namespaceRegistry}/${serviceName}:${BRANCH_NAME}-${BUILD_NUMBER} ${ecrUri}:${BRANCH_NAME}-${BUILD_NUMBER}
+    //                     docker push ${ecrUri}:${BRANCH_NAME}-${BUILD_NUMBER}
+    //                 """
+    //             } else {
+    //                 // Commands for Windows
+    //                 bat """
+    //                     aws ecr get-login-password --region ap-southeast-1 | docker login --username AWS --password-stdin ${ecrUri}
+    //                     docker tag ${imageRegistry}/${namespaceRegistry}/${serviceName}:${BRANCH_NAME}-${BUILD_NUMBER} ${ecrUri}:${BRANCH_NAME}-${BUILD_NUMBER}
+    //                     docker push ${ecrUri}:${BRANCH_NAME}-${BUILD_NUMBER}
+    //                 """
+    //             }
+    //         }
+    //     }
+    
+    // }
 }
 
 def deployToK8S(args) {
@@ -141,16 +141,16 @@ def deployToK8S(args) {
                         git clone ${gitopsRepo} -b ${gitopsBranch} .
                         set targetDir=nonprod
                         if "%BRANCH_NAME%"=="main" set targetDir=prod
-                        set deploymentYamlFile=%targetDir%\\%serviceName%\\deployment.yaml
+                        set deploymentYamlFile=%targetDir%\\${serviceName}\\deployment.yaml
                         
-                        powershell -Command "((Get-Content '%deploymentYamlFile%' -Raw) -replace '(^\\\\s*image: [^:]*:)[^ ]*', '\\\\1${newTag}') | Set-Content '%deploymentYamlFile%'"
+                        powershell -Command "(Get-Content '%deploymentYamlFile%' -Raw) -replace '(^\\s*image: [^:]*:)[^ ]*', '\\1${newTag}' | Set-Content '%deploymentYamlFile%'"
                         
                         git config user.email "jenkins-ci@example.com"
                         git config user.name "Jenkins"
                         git add %deploymentYamlFile%
                         git commit -m "Update image to ${serviceName}"
                         git push origin %gitopsBranch%
-                    """
+                    """ 
                 }
             }
         }
