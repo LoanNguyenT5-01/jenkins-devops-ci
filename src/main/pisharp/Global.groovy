@@ -48,6 +48,9 @@ def buildDockerImages(args) {
     def credentialDockerId = args.credentialDockerId
     def namespaceRegistry = args.namespaceRegistry
     def serviceName = args.serviceName
+    def ecrUri = "275731741847.dkr.ecr.ap-southeast-1.amazonaws.com/practical-devops"
+    def awsCredentialsId = 'aws-cli'
+    
     stage ("Build Images by Docker") {
         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: credentialDockerId, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
             docker.withRegistry("https://${imageRegistry}", credentialDockerId) {
@@ -59,6 +62,31 @@ def buildDockerImages(args) {
             }
         }
     }
+    stage("Push Image to ECR") {
+        steps {
+            withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: awsCredentialsId]]) {
+                script {
+                    if (isUnix()) {
+                        // Commands for Unix/Linux
+                        sh """
+                            aws ecr get-login-password --region ap-southeast-1 | docker login --username AWS --password-stdin ${ecrUri}
+                            docker tag ${imageRegistry}/${namespaceRegistry}/${serviceName}:${BRANCH_NAME}-${BUILD_NUMBER} ${ecrUri}:${BRANCH_NAME}-${BUILD_NUMBER}
+                            docker push ${ecrUri}:${BRANCH_NAME}-${BUILD_NUMBER}
+                        """
+                    } else {
+                        // Commands for Windows
+                        bat """
+                            aws ecr get-login-password --region ap-southeast-1 | docker login --username AWS --password-stdin ${ecrUri}
+                            docker tag ${imageRegistry}/${namespaceRegistry}/${serviceName}:${BRANCH_NAME}-${BUILD_NUMBER} ${ecrUri}:${BRANCH_NAME}-${BUILD_NUMBER}
+                            docker push ${ecrUri}:${BRANCH_NAME}-${BUILD_NUMBER}
+                        """
+                    }
+                }
+            }
+        }
+    }
+
+
 }
 
 def pushDockerImages(args) {
@@ -86,7 +114,7 @@ def deployToK8S(args) {
     def gitopsBranch = args.gitopsBranch
     def newTag = "${BRANCH_NAME}-${BUILD_NUMBER}"
     
-    stage ("Deploy To K8S Using GitOps Concept") {
+    stage ("Deploy To K8S Using GitOps Concept test") {
         script {
             if (isUnix()) {
                 dir('gitops') {
