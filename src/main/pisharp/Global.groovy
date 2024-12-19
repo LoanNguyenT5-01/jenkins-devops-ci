@@ -113,6 +113,7 @@ def deployToK8S(args) {
     def serviceName = args.serviceName
     def gitopsBranch = args.gitopsBranch
     def newTag = "${BRANCH_NAME}-${BUILD_NUMBER}"
+    def targetDir = (env.BRANCH_NAME == 'main') ? 'prod' : 'nonprod'
     println("New Tag: ${newTag}")
 
     stage ("Deploy To K8S Using GitOps Concept test") {
@@ -120,7 +121,6 @@ def deployToK8S(args) {
             if (isUnix()) {
                 dir('gitops') {
                     git credentialsId: "${gitCredential}", url: "${gitopsRepo}", branch: "${gitopsBranch}"
-                    def targetDir = (env.BRANCH_NAME == 'main') ? 'prod' : 'nonprod'
                     def deploymentYamlFile = "${targetDir}/${serviceName}/deployment.yaml"
 
                     sh """
@@ -142,9 +142,7 @@ def deployToK8S(args) {
                     withCredentials([gitUsernamePassword(credentialsId: "${gitCredential}")]) {
                         bat """
                             git clone ${gitopsRepo} -b ${gitopsBranch} .
-                            set targetDir=nonprod
-                            if "%BRANCH_NAME%"=="main" set targetDir=prod
-
+ 
                             powershell -Command "(Get-Content ${targetDir}\\${serviceName}\\deployment.yaml) -replace 'image: loannguyent5/${serviceName}:[^\\s]*', 'image: loannguyent5/${serviceName}:${newTag}' | Set-Content ${targetDir}\\${serviceName}\\deployment.yaml"
                             powershell -Command "Get-Content ${targetDir}\\${serviceName}\\deployment.yaml | Write-Output"
                             
