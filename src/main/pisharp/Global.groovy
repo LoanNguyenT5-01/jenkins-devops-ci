@@ -145,8 +145,8 @@ def deployToK8S(args) {
                             set targetDir=nonprod
                             if "%BRANCH_NAME%"=="main" set targetDir=prod
 
-                            powershell -Command "(Get-Content targetDir\\${serviceName}\\deployment.yaml) -replace 'image: loannguyent5/${serviceName}:[^\\s]*', 'image: loannguyent5/${serviceName}:${newTag}' | Set-Content targetDir\\${serviceName}\\deployment.yaml"
-                            powershell -Command "Get-Content targetDir\\${serviceName}\\deployment.yaml | Write-Output"
+                            powershell -Command "(Get-Content ${targetDir}\\${serviceName}\\deployment.yaml) -replace 'image: loannguyent5/${serviceName}:[^\\s]*', 'image: loannguyent5/${serviceName}:${newTag}' | Set-Content ${targetDir}\\${serviceName}\\deployment.yaml"
+                            powershell -Command "Get-Content ${targetDir}\\${serviceName}\\deployment.yaml | Write-Output"
                             
                             git config user.email "jenkins-ci@example.com"
                             git config user.name "Jenkins"
