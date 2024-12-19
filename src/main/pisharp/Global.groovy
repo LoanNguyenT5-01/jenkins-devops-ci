@@ -148,7 +148,7 @@ def deployToK8S(args) {
                             
                             git config user.email "jenkins-ci@example.com"
                             git config user.name "Jenkins"
-                            git add %deploymentYamlFile%
+                            git add ${targetDir}\\${serviceName}\\deployment.yaml
                             
                             git commit -m "Update image for ${serviceName}"
                             git push --set-upstream origin "${gitopsBranch}"
