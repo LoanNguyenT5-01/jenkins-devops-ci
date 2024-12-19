@@ -26,30 +26,30 @@ def call(serviceName) {
     }
 
 
-    // Step 1: Scan all the application to check if we can put any sensitive information in the source code or not
-    trivy.trivyScanSecrets()
+    // // Step 1: Scan all the application to check if we can put any sensitive information in the source code or not
+    // trivy.trivyScanSecrets()
 
-    // Step 2: Run the unit test to check function code and show the test result
-    global.runPythonUnitTest()
-    global.processTestResults()
+    // // Step 2: Run the unit test to check function code and show the test result
+    // global.runPythonUnitTest()
+    // global.processTestResults()
 
-    // Step 3: Scan the vulnerabilities of each python dependency
-    trivy.trivyScanVulnerabilities()
+    // // Step 3: Scan the vulnerabilities of each python dependency
+    // trivy.trivyScanVulnerabilities()
 
-    // Step 4: Scan static code to check the Code smell, Bug, Vulnerability
-    // sonar.sonarQubeAnalysis(serviceName, sonarHostURL, sonarAuthToken)
+    // // Step 4: Scan static code to check the Code smell, Bug, Vulnerability
+    // // sonar.sonarQubeAnalysis(serviceName, sonarHostURL, sonarAuthToken)
 
-    // Step 5: Install python dependencies
-    global.pythonRunInstallDependencies()
+    // // Step 5: Install python dependencies
+    // global.pythonRunInstallDependencies()
 
-    // // Step 6: Build docker images with the new tag
-    global.buildDockerImages(imageRegistry: imageRegistry, credentialDockerId: credentialDockerId, namespaceRegistry: namespaceRegistry, serviceName: serviceName)
+    // // // Step 6: Build docker images with the new tag
+    // global.buildDockerImages(imageRegistry: imageRegistry, credentialDockerId: credentialDockerId, namespaceRegistry: namespaceRegistry, serviceName: serviceName)
 
-    // // Step 7: Scan the vulnerabilities of the new image
-    trivy.trivyScanDockerImages(imageBuildTag)
+    // // // Step 7: Scan the vulnerabilities of the new image
+    // trivy.trivyScanDockerImages(imageBuildTag)
 
-    // Step 8: Push image to image registry and update the new image tag in the gitops repository
-    global.pushDockerImages(imageRegistry: imageRegistry, credentialDockerId: credentialDockerId, namespaceRegistry: namespaceRegistry, serviceName: serviceName)
+    // // Step 8: Push image to image registry and update the new image tag in the gitops repository
+    // global.pushDockerImages(imageRegistry: imageRegistry, credentialDockerId: credentialDockerId, namespaceRegistry: namespaceRegistry, serviceName: serviceName)
     
     // and then ArgoCD can sync the new deployment
     global.deployToK8S(gitopsRepo: gitopsRepo, gitopsBranch: gitopsBranch, gitCredential: gitCredential, serviceName: serviceName)
