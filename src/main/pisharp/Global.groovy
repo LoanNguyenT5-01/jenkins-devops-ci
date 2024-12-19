@@ -147,8 +147,8 @@ def deployToK8S(args) {
 
                             set deploymentYamlFile=%targetDir%\\${serviceName}\\deployment.yaml
 
-                            powershell -Command "(Get-Content prod\\${serviceName}\\deployment.yaml) -replace 'image: loannguyent5/orders-service:main-11', 'image: loannguyent5/orders-service:${newTag}' | Set-Content prod\\${serviceName}\\deployment.yaml"
-                            powershell -Command "Get-Content prod\\${serviceName}\\deployment.yaml | Write-Output"
+                            powershell -Command "(Get-Content deploymentYamlFile) -replace 'image: loannguyent5/${serviceName}:main-11', 'image: loannguyent5/${serviceName}:${newTag}' | Set-Content deploymentYamlFile"
+                            powershell -Command "Get-Content deploymentYamlFile | Write-Output"
 
                             git config user.email "jenkins-ci@example.com"
                             git config user.name "Jenkins"
