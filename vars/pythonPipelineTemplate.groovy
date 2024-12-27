@@ -37,7 +37,7 @@ def call(serviceName) {
     trivy.trivyScanVulnerabilities()
 
     // Step 4: Scan static code to check the Code smell, Bug, Vulnerability
-    // sonar.sonarQubeAnalysis(serviceName, sonarHostURL, sonarAuthToken)
+    sonar.sonarQubeAnalysis(serviceName, sonarHostURL, sonarAuthToken)
 
     // Step 5: Install python dependencies
     global.pythonRunInstallDependencies()
